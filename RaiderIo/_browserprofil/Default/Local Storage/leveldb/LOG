@@ -1,0 +1,10 @@
+2026/11/10-00:33:24.199 7758 Reusing MANIFEST C:\Users\thana\Desktop\RaiderIo\_browserprofil\Default\Local Storage\leveldb/MANIFEST-000001
+2026/11/10-00:33:24.200 7758 Recovering log #12
+2026/11/10-00:33:24.200 7758 Level-0 table #15: started
+2026/11/10-00:33:24.218 7758 Level-0 table #15: 20967 bytes OK
+2026/11/10-00:33:24.220 7758 Recovering log #14
+2026/11/10-00:33:24.227 7758 Reusing old log C:\Users\thana\Desktop\RaiderIo\_browserprofil\Default\Local Storage\leveldb/000014.log 
+2026/11/10-00:33:24.237 7758 Delete type=0 #12
+2026/11/10-00:34:10.734 47ec Level-0 table #17: started
+2026/11/10-00:34:10.738 47ec Level-0 table #17: 19614 bytes OK
+2026/11/10-00:34:10.739 47ec Delete type=0 #14
