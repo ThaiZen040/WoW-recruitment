@@ -3,30 +3,30 @@ raiderio_recruitment_scraper.py   (Version 6)
 ==============================================
 Sucht Spieler, die eine Gilde suchen, und exportiert sie als CSV.
 
-Feste Regeln (gelten fuer alle Quellen):
+Feste Regeln (gelten für alle Quellen):
   - nur DPS
   - nur deutschsprachige Spieler (German)
-  - nur Gesuche, die juenger als 48 Stunden sind
+  - nur Gesuche, die jünger als 48 Stunden sind
 
 Quellen:
   - Raider.IO   -> raiderio_recruitment.csv   (immer)
   - WoWProgress -> wowprogress_recruitment.csv (erweiterte Version)
 
-STARTEN (fuer alle): Doppelklick auf "Start.bat" im selben Ordner.
-Die Start-Datei installiert beim ersten Mal alles Noetige selbst.
+STARTEN (für alle): Doppelklick auf "Start.bat" im selben Ordner.
+Die Start-Datei installiert beim ersten Mal alles Nötige selbst.
 
 Starten von Hand (z. B. in PyCharm):
     python raiderio_recruitment_scraper.py                -> nur Raider.IO
     python raiderio_recruitment_scraper.py --wowprogress  -> + WoWProgress
 
-How to Start:
+So läuft es ab:
 Beim Start öffnet sich ein Browserfenster. Klick dort einmal das
 Cookie-/Consent-Banner weg. Das Skript wartet dafür (MANUAL_WAIT_SECONDS)
 und macht danach automatisch weiter. Die Zustimmung wird in einem
 Browserprofil gespeichert, beim nächsten Lauf entfällt der Klick meist.
 """
 
-# Erlaubt moderne Typ-Angaben wie "float | None" auch in aelteren
+# Erlaubt moderne Typangaben wie "float | None" auch in älteren
 # Python-Versionen (ab 3.8). Muss ganz oben stehen.
 from __future__ import annotations
 
@@ -48,7 +48,7 @@ from playwright.sync_api import sync_playwright
 # (Bewusst nicht mehr umstellbar, damit niemand aus Versehen Heiler/Tanks holt.)
 ROLE = "dps"
 
-# Nur Gesuche, die juenger als so viele Stunden sind, kommen in die Liste.
+# Nur Gesuche, die jünger als so viele Stunden sind, kommen in die Liste.
 MAX_AGE_HOURS = 48
 
 # Klassenfilter. [] = alle Klassen.
@@ -60,21 +60,21 @@ CLASSES = []
 REGION = "german"
 
 # Sekunden, die du Zeit bekommst, um das Consent-Banner wegzuklicken.
-# Beim zweiten Lauf kannst du das auf 5 runtersetzen.
+# Beim zweiten Lauf kannst du das auf 5 senken.
 MANUAL_WAIT_SECONDS = 25
 
-# Dasselbe fuer WoWProgress (eigene Seite, eigenes Cookie-Banner).
+# Dasselbe für WoWProgress (eigene Seite, eigenes Cookie-Banner).
 WOWPROGRESS_WAIT_SECONDS = 15
 
-# Sicherheitsgrenze: hoechstens so viele Ergebnisseiten durchblaettern.
+# Sicherheitsgrenze: höchstens so viele Ergebnisseiten durchblättern.
 # Normalerweise stoppt das Skript vorher von selbst, sobald die
-# Eintraege aelter als MAX_AGE_HOURS werden.
+# Einträge älter als MAX_AGE_HOURS werden.
 MAX_PAGES = 10
 
-# Kontaktdaten aus den Raider.IO-Einzelprofilen holen?
+# Kontaktdaten aus den einzelnen Raider.IO-Profilen holen?
 FETCH_CONTACT_INFO = True
 
-# Nur die ersten N Raider.IO-Profile besuchen (0 = alle)
+# Nur die ersten N Raider.IO-Profile besuchen (0 = alle).
 CONTACT_LIMIT = 5
 
 DELAY_PAGE = 3.0
@@ -86,15 +86,15 @@ BASE_DIR = Path(__file__).parent
 OUTPUT_CSV = BASE_DIR / "raiderio_recruitment.csv"
 WOWPROGRESS_CSV = BASE_DIR / "wowprogress_recruitment.csv"
 
-# Hier speichert der Browser Cookies/Consent zwischen den Laeufen
+# Hier speichert der Browser Cookies und Zustimmung zwischen den Läufen.
 PROFILE_DIR = BASE_DIR / "_browserprofil"
 
 # WoWProgress-Liste "Looking for Guild": nur Deutsch (lang=de),
 # sortiert nach letzter Aktualisierung (sortby=ts, neueste zuerst).
 WOWPROGRESS_URL = "https://www.wowprogress.com/gearscore/?lfg=1&lang=de&sortby=ts"
 
-# Erweiterte Version an/aus. Wird "--wowprogress" beim Start mitgegeben
-# (das macht Start.bat bei Auswahl 2), ist es True.
+# Erweiterte Version an/aus. Wird beim Start "--wowprogress" mitgegeben
+# (das macht Start.bat bei Auswahl 2), ist der Wert True.
 RUN_WOWPROGRESS = "--wowprogress" in sys.argv
 
 
@@ -278,7 +278,6 @@ EXTRACT_CONTACT_JS = r"""
   return { raw: raw, links: links, hints: hints };
 }
 """
-sdasdasdadasdas
 
 def parse_contact(data: dict) -> dict:
     data = data or {}
@@ -422,13 +421,13 @@ def scrape_raiderio(page) -> list[dict]:
 # WOWPROGRESS (erweiterte Version)
 # ===========================================================================
 
-# Spezialisierungen, die NICHT DPS sind. Alles andere zaehlt als DPS.
+# Spezialisierungen, die NICHT DPS sind. Alles andere zählt als DPS.
 # (Die Namen sind eindeutig: "Holy" ist bei Paladin UND Priester ein Heiler,
 #  "Protection" bei Paladin UND Krieger ein Tank.)
 TANK_SPECS = {"blood", "vengeance", "guardian", "brewmaster", "protection"}
 HEALER_SPECS = {"restoration", "holy", "discipline", "mistweaver", "preservation"}
 
-# Klassen, die NUR DPS spielen koennen. Steht im Profil keine Spec,
+# Klassen, die NUR DPS spielen können. Steht im Profil keine Spec,
 # reicht bei diesen Klassen die Klasse selbst als Nachweis.
 PURE_DPS_CLASSES = {"Hunter", "Mage", "Rogue", "Warlock"}
 
@@ -473,7 +472,7 @@ def ago_to_hours(text: str) -> float | None:
     if not m:
         return None
     zahl_text = m.group(1).lower()
-    # "a day ago" / "an hour ago" bedeutet 1.
+    # "a day ago" bzw. "an hour ago" bedeutet 1.
     zahl = 1 if zahl_text in ("a", "an") else int(zahl_text)
     einheit = m.group(2).lower()
     stunden_pro_einheit = {"minute": 1 / 60, "hour": 1, "day": 24,
@@ -521,7 +520,7 @@ def parse_wowprogress_profile(text: str) -> dict:
 
     # Klasse: In der Kopfzeile steht z. B. "human warlock 80" (Rasse, Klasse,
     # Stufe). Wir suchen eine Klasse, auf die direkt eine Zahl folgt.
-    # So wird nicht aus Versehen ein Menuepunkt oder Gildenname erkannt.
+    # So wird nicht aus Versehen ein Menüpunkt oder Gildenname erkannt.
     wow_class = ""
     klassen_muster = "|".join(c.lower() for c in WOW_CLASSES)
     m = re.search(r"\b(" + klassen_muster + r")\s+\d{1,2}\b", text, re.I)
@@ -567,7 +566,7 @@ def scrape_wowprogress(page) -> list[dict]:
     print("=" * 70)
     time.sleep(WOWPROGRESS_WAIT_SECONDS)
 
-    # --- Schritt 1: Liste durchblaettern, bis die Eintraege zu alt sind ---
+    # --- Schritt 1: Liste durchblättern, bis die Einträge zu alt sind ---
     for page_no in range(1, MAX_PAGES + 1):
         time.sleep(DELAY_PAGE)
         try:
@@ -600,7 +599,7 @@ def scrape_wowprogress(page) -> list[dict]:
             break
         if page_no >= MAX_PAGES:
             break
-        # WoWProgress hat einen Link "next >" zum Weiterblaettern.
+        # WoWProgress hat einen Link "next >" zum Weiterblättern.
         nxt = page.get_by_role("link", name=re.compile(r"^\s*next", re.I))
         if nxt.count() == 0:
             print("Kein 'next'-Link - Ende der Ergebnisse.")
@@ -608,7 +607,7 @@ def scrape_wowprogress(page) -> list[dict]:
         nxt.first.click()
         page.wait_for_timeout(2500)
 
-    # --- Schritt 2: Jedes Profil oeffnen (Spec, Sprache, Battletag) ---
+    # --- Schritt 2: Jedes Profil öffnen (Spec, Sprache, Battletag) ---
     candidates = list(rows_by_key.values())
     print(f"\nPruefe {len(candidates)} Profile auf DPS und Deutsch ...")
     results = []
@@ -622,7 +621,7 @@ def scrape_wowprogress(page) -> list[dict]:
             print(f"{label}: Fehler ({e})")
             continue
 
-        # Sprache: steht im Profil eine Sprache, muss German dabei sein.
+        # Sprache: Steht im Profil eine Sprache, muss German dabei sein.
         if row["languages"] and "german" not in row["languages"].lower():
             print(f"{label}: uebersprungen (Sprache: {row['languages']})")
             continue
@@ -692,7 +691,7 @@ def main():
     print(f"Quellen: Raider.IO{' + WoWProgress' if RUN_WOWPROGRESS else ''}\n")
 
     with sync_playwright() as p:
-        # Persistentes Profil: Consent wird zwischen den Laeufen gemerkt
+        # Dauerhaftes Profil: Die Zustimmung wird zwischen den Läufen gemerkt.
         context = p.chromium.launch_persistent_context(
             user_data_dir=str(PROFILE_DIR),
             headless=False,
