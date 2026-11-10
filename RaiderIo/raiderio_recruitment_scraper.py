@@ -64,7 +64,7 @@ REGION = "german"
 MANUAL_WAIT_SECONDS = 25
 
 # Dasselbe für WoWProgress (eigene Seite, eigenes Cookie-Banner).
-WOWPROGRESS_WAIT_SECONDS = 15
+WOWPROGRESS_WAIT_SECONDS = 35
 
 # Sicherheitsgrenze: höchstens so viele Ergebnisseiten durchblättern.
 # Normalerweise stoppt das Skript vorher von selbst, sobald die
